@@ -65,7 +65,7 @@ class PerevalAdded(models.Model):
 
 
 class PerevalImages(models.Model):
-    pereval_id = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE)
+    pereval_id= models.ForeignKey(PerevalAdded, on_delete=models.CASCADE)
     image_id = models.ForeignKey(Images, on_delete=models.CASCADE)
 
     class Meta:
