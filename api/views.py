@@ -5,6 +5,7 @@ from rest_framework import status
 from .serializers import PerevalAddedSerializer, PerevalUPDSerializer
 from .models import PerevalAdded
 
+
 class SubmitDataView(APIView):
     def post(self, request):
         serializer = PerevalAddedSerializer(data=request.data)
@@ -30,15 +31,28 @@ class SubmitDataView(APIView):
                 'id': None
             }, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, pk):
-        try:
-            pereval = PerevalAdded.objects.get(pk=pk)
-            serializer = PerevalAddedSerializer(pereval)
+    def get(self, request, pk=None):
+        if pk is not None:
+            try:
+                pereval = PerevalAdded.objects.get(pk=pk)
+                serializer = PerevalAddedSerializer(pereval)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except PerevalAdded.DoesNotExist:
+                return Response({'message':f'Запись {pk} не найдена',
+                                 "status": 404},
+                                status=status.HTTP_404_NOT_FOUND)
+
+        email = request.query_params.get('user_email')
+        if email:
+            queryset = PerevalAdded.objects.filter(user__email=email)
+            serializer = PerevalAddedSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except PerevalAdded.DoesNotExist:
-            return Response({'message':f'Запись {pk} не найдена',
-                             "status": 404},
-                            status=status.HTTP_404_NOT_FOUND)
+
+        return Response({
+            'message': 'Не указан email для поиска.'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
 
     def patch(self, request, pk):
         try:
