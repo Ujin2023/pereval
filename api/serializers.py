@@ -26,6 +26,10 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
                   'user', 'coord', 'level_winter', 'level_summer', 'level_autumn', 'level_spring', 'images']
 
     def create(self, validated_data):
+        """
+        Создает запись о перевале.
+        Пользователь ищется по email (get_or_create), координаты и фото создаются заново.
+        """
         user_data = validated_data.pop('user')
         coord_data = validated_data.pop('coord')
         images_data = validated_data.pop('images')
@@ -39,6 +43,7 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
         return pereval
 
 class PerevalUPDSerializer(serializers.ModelSerializer):
+    """Сериализатор для обновления данных перевала"""
     user = UserSerializer(read_only=True)
     coord = CoordsSerializer()
     images = ImagesSerializer(many=True)
@@ -49,6 +54,10 @@ class PerevalUPDSerializer(serializers.ModelSerializer):
                   'user', 'coord', 'level_winter', 'level_summer', 'level_autumn', 'level_spring', 'images']
 
     def update(self, instance, validated_data):
+        """
+        Обновляет информацию о перевале.
+        Старые изображения удаляются и заменяются новыми. Координаты перезаписываются.
+        """
         coord_data = validated_data.pop('coord')
         images_data = validated_data.pop('images')
 
