@@ -21,7 +21,7 @@ class SubmitDataView(APIView):
                     'message': 'Отправлено успешно',
                     'id': obj.id
                 }, status=status.HTTP_200_OK)
-            except Exception as e:
+            except Exception as e: # pylint: disable=broad-exception-caught
                 return Response({
                     'status': 500,
                     'message': str(e),
@@ -88,8 +88,7 @@ class SubmitDataView(APIView):
                 'state': 1,
                 'message': "Запись успешно обновлена"
             })
-        else:
-            return Response({
-                'state': 0,
-                'message': serializer.errors
-            })
+        return Response({
+            'state': 0,
+            'message': serializer.errors
+        })
